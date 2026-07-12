@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 from src.rag_pipeline import RAGPipeline
 
-load_dotenv()  # picks up OPENAI_API_KEY from a .env file if present
+load_dotenv()  # picks up GOOGLE_API_KEY from a .env file if present
 
 st.set_page_config(page_title="Intelligent Document Assistant", page_icon="📄", layout="wide")
 
@@ -37,13 +37,14 @@ with st.sidebar:
     st.header("⚙️ Settings")
 
     api_key = st.text_input(
-        "OpenAI API Key",
+        "Google API Key",
         type="password",
-        value=os.environ.get("OPENAI_API_KEY", ""),
-        help="Required for answer generation. Stored only for this session.",
+        value=os.environ.get("GOOGLE_API_KEY", ""),
+        help="Required for answer generation (Gemini). Get a free key at "
+        "https://aistudio.google.com/app/apikey. Stored only for this session.",
     )
     if api_key:
-        os.environ["OPENAI_API_KEY"] = api_key
+        os.environ["GOOGLE_API_KEY"] = api_key
 
     chunk_size = st.slider("Chunk size (characters)", 300, 2000, 1000, step=100)
     chunk_overlap = st.slider("Chunk overlap (characters)", 0, 400, 150, step=25)
@@ -57,7 +58,7 @@ with st.sidebar:
 
     if st.button("Process Documents", type="primary", disabled=not uploaded_files):
         if not api_key:
-            st.error("Please enter your OpenAI API key first.")
+            st.error("Please enter your Google API key first.")
         else:
             with st.spinner("Extracting text, chunking, and building the vector index..."):
                 temp_paths = []
